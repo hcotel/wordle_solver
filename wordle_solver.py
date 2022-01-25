@@ -1,12 +1,14 @@
 import pickle
 from collections import Counter
 
+from constants import DICTIONARY_SIZE, GET_DIGIT_FREQUENCY_TOP_WORD_COUNT, PREDICT_WORD_COUNT
+
 
 class WordleSolver:
     def __init__(self):
         with open("data/five_words_with_freq.pkl", "rb") as mypicklefile:
             self.word_list = pickle.load(mypicklefile)
-            self.word_list = self.word_list[:5000]
+            self.word_list = self.word_list[:DICTIONARY_SIZE]
         self.available_words_list = self.word_list
         self.calculate_digit_frequencies()
         self.update_most_probable_words_list()
@@ -45,10 +47,10 @@ class WordleSolver:
     def predict(self):
         print(f"You should predict one of the following:")
         top_words_used_frequency_dict = {}
-        for top_word, value in list(self.words_value_dict.items())[:20]:
+        for top_word, value in list(self.words_value_dict.items())[:GET_DIGIT_FREQUENCY_TOP_WORD_COUNT]:
             top_words_used_frequency_dict[top_word] = self.word_list.index(top_word)
 
-        top_words_used_frequency_dict = {k: v for k, v in sorted(top_words_used_frequency_dict.items(), key=lambda item: item[1])[:5]}
+        top_words_used_frequency_dict = {k: v for k, v in sorted(top_words_used_frequency_dict.items(), key=lambda item: item[1])[:PREDICT_WORD_COUNT]}
         predicted_word_counter = 1
         for word, freq in top_words_used_frequency_dict.items():
             print(f"{predicted_word_counter}. {word}: {self.words_value_dict[word]} {freq}")
