@@ -66,11 +66,12 @@ class WordleSolver:
         if predicted_result == "+++++":
             print(f"Congratulations you found the word!")
             exit(0)
+        correctly_predicted_chars = [predicted_word[i] for i in range(5) if predicted_result[i] == '+']
         for idx in range(5):
             if predicted_result[idx] == '+':
                 self.update_word_list_correct_pred(idx, predicted_word[idx])
             elif predicted_result[idx] == '.':
-                self.update_word_list_wrong_pred(predicted_word[idx])
+                self.update_word_list_wrong_pred(predicted_word[idx], correctly_predicted_chars)
             elif predicted_result[idx] == '-':
                 self.update_word_list_wrong_place_pred(idx, predicted_word[idx])
         self.calculate_digit_frequencies()
@@ -90,10 +91,13 @@ class WordleSolver:
                 next_list.append(word)
         self.available_words_list = next_list
 
-    def update_word_list_wrong_pred(self, pred_char):
+    def update_word_list_wrong_pred(self, pred_char, correctly_predicted_chars):
         next_list = []
         for word in self.available_words_list:
-            if pred_char not in word:
+            truncated_word = word
+            for correctly_predicted_char in correctly_predicted_chars:
+                truncated_word = truncated_word.replace(correctly_predicted_char, '', 1)
+            if pred_char not in truncated_word:
                 next_list.append(word)
         self.available_words_list = next_list
 
